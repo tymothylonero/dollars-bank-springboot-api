@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 public class Transaction implements Serializable{
 	
@@ -27,6 +29,7 @@ public class Transaction implements Serializable{
 	
 	private Date timestamp;
 	
+	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "user_id", referencedColumnName = "id")
 	private Account account;
