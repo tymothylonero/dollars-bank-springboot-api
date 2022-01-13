@@ -108,6 +108,12 @@ public class Account implements Serializable {
 	public void setTransactions(List<Transaction> transactions) {
 		this.transactions = transactions;
 	}
+	
+	public void attachTransactions() {
+		for(Transaction t : transactions) {
+			t.setAccount(this);
+		}
+	}
 
 	@Override
 	public String toString() {

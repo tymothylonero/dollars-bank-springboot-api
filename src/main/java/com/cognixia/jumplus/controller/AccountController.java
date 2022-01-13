@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,5 +46,33 @@ public class AccountController {
 	}
 	
 	// Update the info of an existing account
+	
+	@PutMapping("/update")
+	public Account updateAccount(@RequestBody Account acc) throws Exception {
+		
+		if(repo.existsById(acc.getId())) {
+			
+			acc.attachTransactions();
+			return repo.save(acc);
+		}
+		throw new Exception("Account with username of '" + acc.getUsername() + "' not found.");
+	}
+	
+	// Delete an account with a given id
+	
+	// TODO
+	
+	// Get an account by its username
+	
+	@GetMapping("/username/{username}")
+	public Account getAccountByUsername(@PathVariable String username) throws Exception {
+		
+		Optional<Account> found = repo.findByUsername(username);
+		if(found.isPresent()) {
+			return found.get();
+		}
+		throw new Exception("Account with username of '" + username + "' not found.");
+		
+	}
 
 }
