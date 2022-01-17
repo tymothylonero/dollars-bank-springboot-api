@@ -35,7 +35,7 @@ public class Transaction implements Serializable{
 	private Account account;
 	
 	public Transaction() {
-		this(-1L, "N/A", "N/A", 0.0, null, null);
+		this(-1L, "N/A", "N/A", 0.0, new Date(), null);
 	}
 
 	public Transaction(Long id, String type, String description, Double amount, Date timestamp, Account account) {

@@ -55,9 +55,5 @@ public class TransactionController {
 		throw new Exception("Transaction with id of '" + id + "' not found.");
 		
 	}
-	
-	// Delete a transaction with an id
-	
-	// TODO
 
 }
