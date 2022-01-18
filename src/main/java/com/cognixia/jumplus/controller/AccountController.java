@@ -3,7 +3,9 @@ package com.cognixia.jumplus.controller;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,7 +62,19 @@ public class AccountController {
 	
 	// Delete an account with a given id
 	
-	// TODO
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<?> deleteAccount(@PathVariable long id) throws Exception {
+		
+		if(repo.existsById(id)) {
+			
+			Account deleted = repo.getById(id);
+			repo.deleteById(id);
+			return new ResponseEntity<Account>(deleted, HttpStatus.OK);
+		}
+		
+		throw new Exception("Account with id of '" + id + "' not found.");
+		
+	}
 	
 	// Get an account by its username
 	
