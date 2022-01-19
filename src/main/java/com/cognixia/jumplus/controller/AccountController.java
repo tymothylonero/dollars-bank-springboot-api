@@ -1,5 +1,7 @@
 package com.cognixia.jumplus.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cognixia.jumplus.model.Account;
+import com.cognixia.jumplus.model.Transaction;
 import com.cognixia.jumplus.repository.AccountRepository;
+import com.cognixia.jumplus.repository.TransactionRepository;
 
 @RequestMapping("/api/account")
 @RestController
@@ -23,6 +27,9 @@ public class AccountController {
 	
 	@Autowired
 	AccountRepository repo;
+	
+	@Autowired
+	TransactionRepository transRepo;
 	
 	// Get an account by its id
 	@GetMapping("/{id}")
@@ -42,7 +49,19 @@ public class AccountController {
 		
 		acc.setId(0L);
 		
+		List<Transaction> transactions = acc.getTransactions();
+		acc.setTransactions(null);
+		
 		Account newAcc = repo.save(acc);
+		
+		List<Transaction> newTransactions = new ArrayList<Transaction>();
+		for(Transaction t : transactions) {
+			t.setId(0L);
+			t.setAccount(newAcc);
+			newTransactions.add(transRepo.save(t));
+		}
+		
+		newAcc.setTransactions(newTransactions);
 		
 		return ResponseEntity.status(201).body(newAcc);
 	}
