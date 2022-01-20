@@ -107,5 +107,33 @@ public class AccountController {
 		throw new Exception("Account with username of '" + username + "' not found.");
 		
 	}
+	
+	@PutMapping("/username/deposit/{username}/{amount}")
+    public Account depositAmount(@PathVariable String username , @PathVariable Double amount) throws Exception {
+
+            Account user = getAccountByUsername(username);
+
+            Double newBalance = user.getBalance() + amount;
+            user.setBalance(newBalance);
+            return updateAccount(user);
+
+
+    }
+
+    @PutMapping("/username/withdraw/{username}/{amount}")
+    public Account withdrawAmount(@PathVariable String username , @PathVariable Double amount) throws Exception {
+
+
+        Account user = getAccountByUsername(username);
+        if(amount > user.getBalance()) {
+            throw new Exception("Insufficient Balance");
+        }
+        else {
+            Double newBalance = user.getBalance() - amount;
+            user.setBalance(newBalance);
+            return updateAccount(user);
+        }
+
+    }
 
 }
