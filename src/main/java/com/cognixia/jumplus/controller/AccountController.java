@@ -1,6 +1,7 @@
 package com.cognixia.jumplus.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -111,11 +112,22 @@ public class AccountController {
 	@PutMapping("/username/deposit/{username}/{amount}")
     public Account depositAmount(@PathVariable String username , @PathVariable Double amount) throws Exception {
 
-            Account user = getAccountByUsername(username);
+		Optional<Account> findAccount = repo.findByUsername(username);
+		
+		if(findAccount.isEmpty()) {
+			throw new Exception("Could not find account '" + username + "'.");
+		}
+		
+		Account user = findAccount.get(); 
 
-            Double newBalance = user.getBalance() + amount;
-            user.setBalance(newBalance);
-            return updateAccount(user);
+		Transaction deposit = new Transaction(0L, "Deposit", "Deposit of $" + amount, amount, new Date(), user);
+		
+		transRepo.save(deposit);
+		
+		Double newBalance = user.getBalance() + amount;
+		user.setBalance(newBalance);
+		user.attachTransactions();
+		return updateAccount(user);
 
 
     }
