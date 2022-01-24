@@ -136,15 +136,26 @@ public class AccountController {
     public Account withdrawAmount(@PathVariable String username , @PathVariable Double amount) throws Exception {
 
 
-        Account user = getAccountByUsername(username);
-        if(amount > user.getBalance()) {
-            throw new Exception("Insufficient Balance");
-        }
-        else {
-            Double newBalance = user.getBalance() - amount;
-            user.setBalance(newBalance);
-            return updateAccount(user);
-        }
+		Optional<Account> findAccount = repo.findByUsername(username);
+
+		if (findAccount.isEmpty()) {
+			throw new Exception("Could not find account '" + username + "'.");
+		}
+
+		Account user = findAccount.get();
+		if (amount > user.getBalance()) {
+			throw new Exception("Insufficient Balance");
+		} else {
+			
+			Transaction withdraw = new Transaction(0L, "Withdrawal", "Withdrawal of $" + amount, amount * -1.0, new Date(), user);
+			
+			transRepo.save(withdraw);
+			
+			Double newBalance = user.getBalance() - amount;
+			user.setBalance(newBalance);
+			user.attachTransactions();
+			return updateAccount(user);
+		}
 
     }
 
